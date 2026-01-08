@@ -2,14 +2,13 @@
 
 version: "3.7"
 
-volumes:
-    local_data: {}
-
 services:
     db:
         image: postgres:17-alpine
         volumes:
-            - ./local_data:/var/lib/postgresql/
+            - type: bind
+              source: ./local_data
+              target: /var/lib/postgresql/data
         ports:
             - "5432:5432"
         env_file:
@@ -21,8 +20,9 @@ services:
             context: .
             args:
                 env: dev
+                target: aws
         entrypoint: docker-php-entrypoint
-        command: /var/www/html/run-cron.sh
+        command: /var/www/html/deploy/task_entrypoint.sh
         volumes:
             - .:/var/www/html
         env_file:
@@ -35,8 +35,9 @@ services:
             context: .
             args:
                 env: dev
+                target: aws
         ports:
-            - "30100:80"
+            - "30100:8080"
         volumes:
             - .:/var/www/html
         env_file:

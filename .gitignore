@@ -23,3 +23,7 @@
 # Apache-specific user and not implode at runtime when they want to write cache files.
 /var/*
 !/var/cache/twig/.gitkeep
+
+/local_data/*
+!/local_data/.gitkeep
+.DS_Store
