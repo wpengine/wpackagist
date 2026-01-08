@@ -1,0 +1,57 @@
+# Git
+.git
+.gitignore
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# CI/CD
+.circleci/
+cloudbuild.yaml
+
+# Documentation
+README.md
+FUNDING.yml
+LICENSE
+packages/Readme.md
+scratch-info.txt
+
+# Local development
+.env.local
+.env.*.local
+.env.postgres.local
+local_data
+Makefile
+
+# IDE
+.editorconfig
+.idea
+.vscode
+.devcontainer/
+*.swp
+*.swo
+*~
+
+# Cache and logs
+var/cache/*
+var/log/*
+!var/cache/.gitkeep
+!var/log/.gitkeep
+
+# Composer
+composer.phar
+
+# Testing
+phpunit.xml
+.phpunit.result.cache
+tests
+
+# Node modules (if any)
+node_modules
+
+# OS files
+.DS_Store
+Thumbs.db
+

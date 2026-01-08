@@ -3,9 +3,23 @@ FROM php:8.5-apache
 ARG env
 RUN test -n "$env"
 
-# Install the AWS CLI - needed to load in secrets safely from S3. See https://aws.amazon.com/blogs/security/how-to-manage-secrets-for-amazon-ec2-container-service-based-applications-by-using-amazon-s3-and-docker/
-RUN apt-get update -qq && apt-get install -y awscli && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apk/*
+ARG target=aws
+
+RUN if [ "$target" = "aws" ]; then \
+        # Install the AWS CLI - needed to load in secrets safely from S3. \
+        echo Building for target=aws && \
+        apt-get update -qq && apt-get install -y awscli && \
+        rm -rf /var/lib/apt/lists/* /var/cache/apk/*; \
+    elif [ "$target" = "gcp" ]; then \
+        # Install the gcloud CLI - needed to get secrets from Google Secret Manager \
+        echo Building for target=gcp && \
+        apt-get update -qq && \
+        apt-get install -y curl gnupg apt-transport-https ca-certificates && \
+        echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+        curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg && \
+        apt-get update -qq && apt-get install -y google-cloud-cli && \
+        rm -rf /var/lib/apt/lists/* /var/cache/apk/*; \
+    fi
 
 # Install svn client, a requirement for the current native exec approach; git for
 # Composer pulls; libpq-dev for Postgres; libicu-dev for intl; libonig-dev for mbstring.
@@ -39,4 +53,13 @@ COPY ./config/php/php.ini /usr/local/etc/php/
 RUN mkdir /tmp/twig
 RUN chmod -R 777 /tmp/twig
 
+RUN chown -R www-data:www-data /var/www/html
+# USER www-data
+
 RUN APP_ENV=${env} composer install --no-interaction --quiet --optimize-autoloader --no-dev
+
+# Make entrypoint scripts executable
+RUN chmod +x /var/www/html/deploy/*.sh || true
+
+# Use web_entrypoint.sh directly (handles all platforms: AWS, GCP, Docker)
+CMD ["/var/www/html/deploy/web_entrypoint.sh"]
