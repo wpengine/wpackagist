@@ -1,0 +1,33 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'env=${_APP_ENV}'
+      - '--build-arg'
+      - 'target=gcp'
+      - '--label'
+      - 'arch=x86_64'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/wpackagist-eng-tools/wpackagist/wpackagist:gcp-${_LABEL}'
+      - '.'
+
+# Push the image to Google Artifact Registry
+images:
+  - 'us-central1-docker.pkg.dev/wpackagist-eng-tools/wpackagist/wpackagist:gcp-${_LABEL}'
+
+# Default substitution values
+substitutions:
+  _LABEL: 'latest'
+  _APP_ENV: 'prod'
+
+# Build timeout (default is 10 minutes, increase if needed)
+timeout: '1200s'
+
+options:
+  # Use a larger machine for faster builds
+  machineType: 'N1_HIGHCPU_8'
+  # Log streaming
+  logging: CLOUD_LOGGING_ONLY
+
