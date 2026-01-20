@@ -77,12 +77,16 @@ class Builder
 
         ksort($includes);
 
-        $content = json_encode([
+        $content = [
             'packages' => [],
             'providers-url' => '/' . $providerFormat,
             'provider-includes' => $includes,
             'available-package-patterns' => ['wpackagist-plugin/*', 'wpackagist-theme/*'],
-        ]);
+        ];
+        if (false !== getenv('COMPOSER_MESSAGE')) {
+            $content['info'] = getenv('COMPOSER_MESSAGE');
+        }
+        $content = json_encode($content);
         $this->storage->saveRoot($content);
     }
 
