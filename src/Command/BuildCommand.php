@@ -29,7 +29,7 @@ class BuildCommand extends Command
         Builder $builder,
         EntityManagerInterface $entityManager,
         Storage\PackageStore $storage,
-        $name = null
+        ?string $name = null
     )
     {
         $this->builder = $builder;

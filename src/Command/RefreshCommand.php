@@ -19,7 +19,7 @@ class RefreshCommand extends Command
     /** @var EntityManagerInterface */
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager, $name = null)
+    public function __construct(EntityManagerInterface $entityManager, ?string $name = null)
     {
         $this->connection = $entityManager->getConnection();
         $this->entityManager = $entityManager;

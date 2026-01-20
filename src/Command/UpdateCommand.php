@@ -14,7 +14,7 @@ class UpdateCommand extends Command
     /** @var Update */
     protected $updateService;
 
-    public function __construct(Update $updateService, $name = null)
+    public function __construct(Update $updateService, ?string $name = null)
     {
         $this->updateService = $updateService;
 

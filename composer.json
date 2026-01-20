@@ -3,7 +3,7 @@
     "description": "Install and manage WordPress plugins with Composer",
     "config": {
         "platform": {
-            "php": "8.0.28"
+            "php": "8.5.2"
         },
         "sort-packages": true,
         "allow-plugins": {
@@ -12,7 +12,7 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": "^8.0",
+        "php": "^8.5",
         "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
