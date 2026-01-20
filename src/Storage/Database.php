@@ -67,7 +67,7 @@ final class Database extends PackageStore
         return $this->loadEntity(self::TYPE_ROOT, '', '');
     }
 
-    public function loadLatestEntities($type, $names = null): array
+    public function loadLatestEntities(string $type, ?array $names = null): array
     {
         // we're not interested in the models, only the keyed values, so don't use the repository
         $qb = new QueryBuilder($this->entityManager);
@@ -88,7 +88,7 @@ final class Database extends PackageStore
         return $values;
     }
 
-    public function loadAllPackages($packageNames): array
+    public function loadAllPackages(?array $packageNames): array
     {
         return $this->loadLatestEntities(self::TYPE_PACKAGE, $packageNames);
     }

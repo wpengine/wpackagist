@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM php:8.5-apache
 
 ARG env
 RUN test -n "$env"
@@ -16,8 +16,6 @@ RUN apt-get update -qq && \
 # intl recommended by something in the Doctrine/Symfony stack for improved performance.
 RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
  && docker-php-ext-install intl mbstring pdo_pgsql zip
-
-RUN docker-php-ext-enable opcache
 
 RUN pecl install redis && rm -rf /tmp/pear && docker-php-ext-enable redis
 
