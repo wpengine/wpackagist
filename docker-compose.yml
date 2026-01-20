@@ -7,7 +7,7 @@ volumes:
 
 services:
     db:
-        image: postgres:12.8-alpine
+        image: postgres:17-alpine
         volumes:
             - ./local_data:/var/lib/postgresql/
         ports:
