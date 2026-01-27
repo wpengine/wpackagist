@@ -4,9 +4,7 @@ namespace Outlandish\Wpackagist\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity()]
 class Theme extends Package
 {
     const VENDOR_NAME = 'wpackagist-theme';

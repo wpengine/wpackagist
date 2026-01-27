@@ -6,28 +6,26 @@ use Composer\Package\Version\VersionParser;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=PackageRepository::class)
- * @ORM\Table(
- *     name="packages",
- *     uniqueConstraints={
- *      @ORM\UniqueConstraint(name="package_type_and_name_unique", columns={"class_name", "name"}),
- *     },
- *     indexes={
- *      @ORM\Index(name="package_class_and_last_committed_idx", columns={"class_name", "last_committed"}),
- *      @ORM\Index(name="package_last_committed_idx", columns={"last_committed"}),
- *      @ORM\Index(name="package_last_fetched_idx", columns={"last_fetched"}),
- *      @ORM\Index(name="package_provider_group_idx", columns={"provider_group"}),
- *      @ORM\Index(name="package_is_active_idx", columns={"is_active"}),
- *     }
- * )
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="class_name", type="string")
- * @ORM\DiscriminatorMap({
- *     "Outlandish\Wpackagist\Entity\Plugin" = "Plugin",
- *     "Outlandish\Wpackagist\Entity\Theme" = "Theme",
- * })
- */
+#[ORM\Entity(repositoryClass: PackageRepository::class)]
+#[ORM\Table(
+    name: 'packages',
+    uniqueConstraints: [
+        new ORM\UniqueConstraint(name: 'package_type_and_name_unique', columns: ['class_name', 'name']),
+    ],
+    indexes: [
+        new ORM\Index(name: 'package_class_and_last_committed_idx', columns: ['class_name', 'last_committed']),
+        new ORM\Index(name: 'package_last_committed_idx', columns: ['last_committed']),
+        new ORM\Index(name: 'package_last_fetched_idx', columns: ['last_fetched']),
+        new ORM\Index(name: 'package_provider_group_idx', columns: ['provider_group']),
+        new ORM\Index(name: 'package_is_active_idx', columns: ['is_active']),
+    ]
+)]
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'class_name', type: 'string')]
+#[ORM\DiscriminatorMap([
+    'Outlandish\Wpackagist\Entity\Plugin' => 'Plugin',
+    'Outlandish\Wpackagist\Entity\Theme' => 'Theme',
+])]
 abstract class Package
 {
     const VENDOR_NAME = '';
@@ -37,55 +35,31 @@ abstract class Package
 
     const PROVIDER_GROUP_OLD_CUTOFF = '2011-01-01';
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @var int
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    protected int $id;
 
-    /**
-     * @ORM\Column(type="string")
-     * @var string WordPress package name
-     */
-    protected $name;
+    #[ORM\Column(type: 'string')]
+    protected string $name;
 
-    /**
-     * @ORM\Column(type="string", options={"default": "old"}, nullable=false)
-     * @var string WordPress package name
-     */
-    protected $providerGroup;
+    #[ORM\Column(type: 'string', options: ['default' => 'old'], nullable: false)]
+    protected string $providerGroup;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @var DateTime
-     */
-    protected $lastCommitted;
+    #[ORM\Column(type: 'datetime')]
+    protected DateTime $lastCommitted;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var DateTime|null
-     */
-    protected $lastFetched = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    protected ?DateTime $lastFetched = null;
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     * @var array|null
-     */
-    protected $versions = null;
+    #[ORM\Column(type: 'json', nullable: true)]
+    protected ?array $versions = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @var bool
-     */
-    protected $isActive;
+    #[ORM\Column(type: 'boolean')]
+    protected bool $isActive;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @var string|null WordPress package name
-     */
-    protected $displayName = null;
+    #[ORM\Column(type: 'string', nullable: true)]
+    protected ?string $displayName = null;
 
     /**
      * @return string   URL, e.g. 'https://downloads.wordpress.org/plugin/plugin.1.0.zip'.
