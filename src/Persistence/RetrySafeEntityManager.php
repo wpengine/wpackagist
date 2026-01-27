@@ -114,14 +114,14 @@ class RetrySafeEntityManager extends EntityManagerDecorator
      *
      * {@inheritDoc}
      */
-    public function flush($entity = null): void
+    public function flush(): void
     {
         try {
-            $this->entityManager->flush($entity);
+            $this->entityManager->flush();
         } catch (EntityManagerClosed $closedException) {
             $this->logger->warning('EM closed. RetrySafeEntityManager::flush() trying with a new instance');
             $this->resetManager();
-            $this->entityManager->flush($entity);
+            $this->entityManager->flush();
         }
     }
 
@@ -134,13 +134,13 @@ class RetrySafeEntityManager extends EntityManagerDecorator
      * We need to override the base `EntityManager` call with the equivalent so that repositories
      * contain the retry-safe EM (i.e. `$this` in our current context) and not the default one.
      */
-    public function getRepository($className)
+    public function getRepository(string $className): ORM\EntityRepository
     {
         return $this->ormConfig->getRepositoryFactory()->getRepository($this, $className);
     }
 
     private function buildEntityManager(): EntityManagerInterface
     {
-        return EntityManager::create($this->connection, $this->ormConfig);
+        return new EntityManager($this->connection, $this->ormConfig);
     }
 }

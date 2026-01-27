@@ -73,16 +73,20 @@ class RefreshCommand extends Command
             $newCount = 0;
             foreach ($xml->list->entry as $entry) {
                 $date = date('Y-m-d H:i:s', strtotime((string) $entry->commit->date));
-                $params = [
-                    ':class_name' => $class_name,
-                    ':name' => (string) $entry->name,
-                    ':date' => $date,
-                    ':group' => Package::makeComposerProviderGroup($date)
-                ];
+                $group = Package::makeComposerProviderGroup($date);
 
-                $updateStmt->execute($params);
-                if ($updateStmt->rowCount() == 0) {
-                    $insertStmt->execute($params);
+                $updateStmt->bindValue('date', $date);
+                $updateStmt->bindValue('group', $group);
+                $updateStmt->bindValue('class_name', $class_name);
+                $updateStmt->bindValue('name', (string) $entry->name);
+
+                $affectedRows = $updateStmt->executeStatement();
+                if ($affectedRows == 0) {
+                    $insertStmt->bindValue('class_name', $class_name);
+                    $insertStmt->bindValue('name', (string) $entry->name);
+                    $insertStmt->bindValue('date', $date);
+                    $insertStmt->bindValue('group', $group);
+                    $insertStmt->executeStatement();
                     $newCount++;
                 }
             }

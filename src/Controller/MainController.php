@@ -193,7 +193,7 @@ class MainController extends AbstractController
         $storage->prepare(true);
 
         // first run the update command
-        $name = $request->get('name');
+        $name = $request->request->get('name');
 
         if (is_array($name)) {
             $name = reset($name);
