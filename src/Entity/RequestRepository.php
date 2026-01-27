@@ -20,10 +20,11 @@ class RequestRepository extends EntityRepository
     /** @var LoggerInterface */
     protected $logger;
 
-    public function __construct(EntityManagerInterface $em, Mapping\ClassMetadata $class, LoggerInterface $logger)
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->logger = $logger;
 
+        $class = $em->getClassMetadata(Request::class);
         parent::__construct($em, $class);
     }
 

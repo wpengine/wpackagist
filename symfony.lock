@@ -8,9 +8,6 @@
     "composer/composer": {
         "version": "2.0.3"
     },
-    "composer/package-versions-deprecated": {
-        "version": "1.11.99.5"
-    },
     "composer/semver": {
         "version": "3.2.2"
     },
@@ -20,26 +17,8 @@
     "composer/xdebug-handler": {
         "version": "1.4.4"
     },
-    "doctrine/annotations": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "a2759dd6123694c8d901d0ec80006e044c2e6457"
-        },
-        "files": [
-            "config/routes/annotations.yaml"
-        ]
-    },
-    "doctrine/cache": {
-        "version": "2.1.1"
-    },
     "doctrine/collections": {
         "version": "1.6.4"
-    },
-    "doctrine/common": {
-        "version": "2.13.0"
     },
     "doctrine/dbal": {
         "version": "2.12.0"
@@ -100,9 +79,6 @@
     "doctrine/sql-formatter": {
         "version": "1.0.1"
     },
-    "friendsofphp/proxy-manager-lts": {
-        "version": "v1.0.0"
-    },
     "guzzlehttp/command": {
         "version": "1.0.0"
     },
@@ -120,9 +96,6 @@
     },
     "justinrainbow/json-schema": {
         "version": "5.2.11"
-    },
-    "laminas/laminas-code": {
-        "version": "3.5.1"
     },
     "monolog/monolog": {
         "version": "2.2.0"
@@ -286,9 +259,6 @@
         "version": "v1.18.1"
     },
     "symfony/polyfill-mbstring": {
-        "version": "v1.20.0"
-    },
-    "symfony/polyfill-php72": {
         "version": "v1.20.0"
     },
     "symfony/polyfill-php73": {

@@ -4,44 +4,27 @@ namespace Outlandish\Wpackagist\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(indexes={@ORM\Index(name="package_data_is_latest_idx", columns={"is_latest"})})
- */
+#[ORM\Entity()]
+#[ORM\Table(indexes: [new ORM\Index(name: 'package_data_is_latest_idx', columns: ['is_latest'])])]
 class PackageData
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="string", length=10)
-     * @var string
-     */
-    protected $type;
+    #[ORM\Id()]
+    #[ORM\Column(type: 'string', length: 10)]
+    protected string $type;
 
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="string", length=200)
-     * @var string
-     */
-    protected $name;
+    #[ORM\Id()]
+    #[ORM\Column(type: 'string', length: 200)]
+    protected string $name;
 
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="string", length=64)
-     * @var string
-     */
-    protected $hash;
+    #[ORM\Id()]
+    #[ORM\Column(type: 'string', length: 64)]
+    protected string $hash;
 
-    /**
-     * @ORM\Column(type="text", length=65535, nullable=true)
-     * @var string
-     */
-    protected $value;
+    #[ORM\Column(type: 'text', length: 65535, nullable: true)]
+    protected ?string $value = null;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": 0}, nullable=false)
-     * @var boolean
-     */
-    protected $isLatest = false;
+    #[ORM\Column(type: 'boolean', options: ['default' => 0], nullable: false)]
+    protected bool $isLatest = false;
 
     /**
      * @return string
