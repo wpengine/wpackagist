@@ -13,7 +13,7 @@ doctrine:
         auto_mapping: true
         mappings:
             Outlandish\Wpackagist\Entity:
-                type: annotation
+                type: attribute
                 dir: '%kernel.project_dir%/src/Entity'
                 is_bundle: false
                 prefix: Outlandish\Wpackagist\Entity
