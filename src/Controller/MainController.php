@@ -95,6 +95,11 @@ class MainController extends AbstractController
         return $response;
     }
 
+    public function health(): Response
+    {
+        return new Response('OK', 200);
+    }
+
     public function home(Request $request): Response
     {
         return $this->render('index.twig', [
