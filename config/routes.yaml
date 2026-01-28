@@ -1,3 +1,8 @@
+health:
+    path: /health
+    controller: Outlandish\Wpackagist\Controller\MainController::health
+    methods: GET
+
 home:
     path: /
     controller: Outlandish\Wpackagist\Controller\MainController::home
