@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Outlandish\Wpackagist\Storage;
 
 class MainController extends AbstractController
@@ -50,9 +50,7 @@ class MainController extends AbstractController
         $this->storage = $storage;
     }
 
-    /**
-     * @Route("packages.json", name="json_index")
-     */
+    #[Route('/packages.json', name: 'json_index')]
     public function packageIndexJson(): Response
     {
         $response = new Response($this->storage->loadRoot());
@@ -62,11 +60,11 @@ class MainController extends AbstractController
     }
 
     /**
-     * @Route("p/{provider}${hash}.json", name="json_provider", requirements={"hash"="[0-9a-f]{64}"})
      * @param string $provider
      * @param string $hash
      * @return Response
      */
+    #[Route('/p/{provider}${hash}.json', name: 'json_provider', requirements: ['hash' => '[0-9a-f]{64}'])]
     public function providerJson(string $provider, string $hash): Response
     {
         $data = $this->storage->loadProvider($provider, $hash);
@@ -82,12 +80,12 @@ class MainController extends AbstractController
     }
 
     /**
-     * @Route("p/{dir}/{package}${hash}.json", name="json_package", requirements={"hash"="[0-9a-f]{64}"})
      * @param string $dir   Directory: wpackagist-plugin or wpackagist-theme.
      * @param string $package
      * @param string $hash
      * @return Response
      */
+    #[Route('/p/{dir}/{package}${hash}.json', name: 'json_package', requirements: ['hash' => '[0-9a-f]{64}'])]
     public function packageJson(string $package, string $hash, string $dir): Response
     {
         $dir = str_replace('.', '', $dir);
