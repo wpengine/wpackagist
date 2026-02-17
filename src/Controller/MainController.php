@@ -198,7 +198,18 @@ class MainController extends AbstractController
             return new Response('Not Found',404);
         }
 
-        $requestCount = $this->requestRepository->getRequestCountByIp($request->getClientIp(), 0);
+        // Get the real client IP from proxy headers (e.g. Cloudflare -> Cloud Platform LB -> App)
+        $clientIp = $request->headers->get('CF-Connecting-IP')
+                    ?? $request->headers->get('X-Forwarded-For')
+                    ?? $request->headers->get('X-Real-IP')
+                    ?? $request->getClientIp();
+
+        // X-Forwarded-For can contain multiple IPs (client, proxy1, proxy2), take the first
+        if (str_contains($clientIp, ',')) {
+            $clientIp = trim(explode(',', $clientIp)[0]);
+        }
+
+        $requestCount = $this->requestRepository->getRequestCountByIp($clientIp, 0);
         if ($requestCount > 5) {
             return new Response('Too many requests. Try again in an hour.', 403);
         }
