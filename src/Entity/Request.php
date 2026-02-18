@@ -14,7 +14,7 @@ class Request
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     protected int $id;
 
-    #[ORM\Column(type: 'string', length: 15, unique: true)]
+    #[ORM\Column(type: 'string', length: 45, unique: true)]
     protected string $ipAddress;
 
     #[ORM\Column(type: 'datetime')]
