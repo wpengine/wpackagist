@@ -1,19 +1,18 @@
-{{ form_start(searchForm, {'attr': {'class': 'row collapse'}}) }}
-    <div class="medium-8 columns">
-        <div class="row collapse">
-            <div class="small-12 columns">
-                {{ form_widget(searchForm.q, {'required': false, 'attr': {'autofocus': 'true'}}) }}
-            </div>
-        </div>
-    </div>
-    <div class="medium-4 columns">
-        <div class="row collapse">
-            <div class="small-6 columns">
-                {{ form_widget(searchForm.type) }}
-            </div>
-            <div class="small-6 columns">
-                {{ form_widget(searchForm.search, { 'label': 'Search »','attr': {'class': 'primary-color postfix'}}) }}
-            </div>
-        </div>
-    </div>
-{{ form_end(searchForm) }}
+{% set is_compact = is_compact|default(false) %}
+{% set search_value = search_value|default('') %}
+
+<form class="search-bar{{ is_compact ? ' search-bar--compact' : '' }}" action="/search" method="get">
+    <span class="search-bar__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+    </span>
+    <input type="search" name="q" class="search-bar__input" placeholder="Search for plugins or themes..." value="{{ search_value }}">
+    <select name="type" class="search-bar__dropdown">
+        <option value="">All Packages</option>
+        <option value="plugin">Plugins</option>
+        <option value="theme">Themes</option>
+    </select>
+    <button type="submit" class="search-bar__button">Search</button>
+</form>
