@@ -38,12 +38,20 @@ class RefreshCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'Path to svn executable',
                 'svn'
+            )
+            ->addOption(
+                'limit',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Limit the number of packages to process (for testing)',
+                0
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $svn = $input->getOption('svn');
+        $limit = (int) $input->getOption('limit');
 
         $types = [
             'plugin' => Plugin::class,
@@ -71,7 +79,13 @@ class RefreshCommand extends Command
 
             $this->connection->beginTransaction();
             $newCount = 0;
+            $processedCount = 0;
             foreach ($xml->list->entry as $entry) {
+                if ($limit > 0 && $processedCount >= $limit) {
+                    $output->writeln("<info>Reached limit of $limit packages, stopping.</info>");
+                    break;
+                }
+
                 $date = date('Y-m-d H:i:s', strtotime((string) $entry->commit->date));
                 $group = Package::makeComposerProviderGroup($date);
 
@@ -89,6 +103,7 @@ class RefreshCommand extends Command
                     $insertStmt->executeStatement();
                     $newCount++;
                 }
+                $processedCount++;
             }
             $this->connection->commit();
 

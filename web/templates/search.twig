@@ -1,87 +1,246 @@
 {% extends "layout.twig" %}
 
-{% block title %}
-    {{ title }}
-{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    {% include 'searchbar.twig' %}
+    <!-- Search Header -->
+    <section class="search-header">
+        <div class="container">
+            <div class="search-header__card dashed_border">
+                <div class="search-header__inner">
+                    <a href="{{ app.request.basepath }}/" class="search-header__logo" title="WPackagist">
+                        <img src="{{ app.request.basepath }}/assets/img/wpackagist-logo.svg" alt="WPackagist">
+                    </a>
+                    <div class="search-header__form">
+                        {% include 'searchbar.twig' with {'is_compact': true} %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    {% if error %}
-        <div class="alert-box alert">{{ error }}</div>
-    {% endif %}
-    <table>
-        <thead>
-            <tr>
-                <th width="8%">Type</th>
-                <th width="20%">Name</th>
-                <th width="16%"><abbr title="Last time a modification was committed to the SVN repository">Last committed</abbr></th>
-                <th width="16%"><abbr title="Last time this package was updated in the WordPress® Packagist database">Last fetched</abbr></th>
-                <th width="32%">Versions</th>
-                <th width="4%">Active</th>
-                <th width="4%">Refresh</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for package in currentPageResults %}
+    <!-- Results -->
+    <main class="container">
+        <div class="results-wrapper dashed_border">
+            {% if error %}
+                <div class="alert alert--warning">
+                    <span class="alert__icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </span>
+                    <div class="alert__content">{{ error }}</div>
+                </div>
+            {% endif %}
+
+            <table class="results-table">
+            <thead>
                 <tr>
-                    <td data-type="{{ package.type }}">
-                        {{ package.type | capitalize }}
-                    </td>
-                    <td data-name="{{ package.name | e }}">
-                        <a href="https://wordpress.org/{{ package.type }}s/{{ package.name | e }}/" target="_blank">{{ package.name | e }}</a>
-                    </td>
-                    <td>
-                        {{ package.lastCommitted ? package.lastCommitted | date : 'Not Committed' }}
-                    </td>
-                    <td>
-                        {{ package.lastFetched ? package.lastFetched | date : 'Not fetched' }}
-                    </td>
-                    <td>
-                        {% set versions = package.versions | format_versions %}
-                        {% for version in versions %}
-                            {# Separator allowing to toggle the show more version #}
-                            {% if (loop.index == 2 and loop.length > 4) %}
-                                <a href="#" class="label round primary-color js-toggle-more" title="Show all versions">...</a>
+                    <th style="width: 26%">Name</th>
+                    <th style="width: 10%">Type</th>
+                    <th style="width: 14%"><abbr title="Last time a modification was committed to the SVN repository">Last committed</abbr></th>
+                    <th style="width: 14%"><abbr title="Last time this package was updated in the WordPress® Packagist database">Last fetched</abbr></th>
+                    <th style="width: 28%">Versions</th>
+                    <th style="width: 4%">Active</th>
+                    <th style="width: 4%">Refresh</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for package in currentPageResults %}
+                    {% set versions = package.versions | format_versions %}
+                    {% set totalVersions = versions | length %}
+                    {% set hasHiddenVersions = totalVersions > 3 %}
+                    <tr data-package-name="{{ package.name | e }}"
+                        data-package-type="{{ package.type }}"
+                        data-package-last-committed="{{ package.lastCommitted ? package.lastCommitted | date('M j, Y H:i') : 'Not Committed' }}"
+                        data-package-last-fetched="{{ package.lastFetched ? package.lastFetched | date('M j, Y H:i') : 'Not fetched' }}"
+                        data-package-is-active="{{ package.isActive ? 'true' : 'false' }}"
+                        data-package-versions="{{ versions | json_encode }}">
+                        <td>
+                            <a href="https://wordpress.org/{{ package.type }}s/{{ package.name | e }}/" target="_blank" class="results-table__name">{{ package.name | e }}</a>
+                        </td>
+                        <td>
+                            <span class="results-table__type">{{ package.type | capitalize }}</span>
+                        </td>
+                        <td>
+                            {{ package.lastCommitted ? package.lastCommitted | date('M j, Y H:i') : 'Not Committed' }}
+                        </td>
+                        <td>
+                            {{ package.lastFetched ? package.lastFetched | date('M j, Y H:i') : 'Not fetched' }}
+                        </td>
+                        <td>
+                            {% set hasDevTrunk = 'dev-trunk' in versions %}
+                            {% set maxVisible = 3 %}
+                            {% set hiddenCount = totalVersions > maxVisible ? totalVersions - maxVisible : 0 %}
+
+                            {# Show dev-trunk first if available #}
+                            {% if hasDevTrunk %}
+                                <a href="#" data-version="dev-trunk" class="version-pill version-pill--dev js-version">dev-trunk</a>
                             {% endif %}
-                            {# Hide extra versions, keep showing only the last 3 and the dev-trunk #}
-                            {% if loop.index >= 2  and loop.index <= loop.length - 3 %}
-                                <a href="#" data-version="{{ version }}" data-hide="true" class="hide label round primary-color version js-version">{{ version }}</a>
+
+                            {# Show latest versions (excluding dev-trunk) #}
+                            {% set versionIndex = 0 %}
+                            {% set versionsToShow = hasDevTrunk ? maxVisible - 1 : maxVisible %}
+                            {% for version in versions | reverse %}
+                                {% if version != 'dev-trunk' %}
+                                    {% set versionIndex = versionIndex + 1 %}
+                                    {% if versionIndex <= versionsToShow %}
+                                        <a href="#" data-version="{{ version }}" class="version-pill js-version">{{ version }}</a>
+                                    {% endif %}
+                                {% endif %}
                             {% else %}
-                                <a href="#" data-version="{{ version }}" class="label round primary-color version js-version">{{ version }}</a>
+                                {% if not hasDevTrunk %}
+                                    <span class="text-secondary">No version available.</span>
+                                {% endif %}
+                            {% endfor %}
+
+                            {# Show "more..." pill to open modal with all versions #}
+                            {% if hiddenCount > 0 %}
+                                <a href="#" class="version-pill version-pill--more js-version" data-version="" title="Show all {{ totalVersions }} versions">more&hellip;</a>
                             {% endif %}
-                        {% else %}
-                            No version available.
-                        {% endfor %}
-                    </td>
-                    <td style="text-align: center">
-                        {% if package.isActive %}
-                            <span style="color: green">✔</span>
-                        {% else %}
-                            <span style="color: red">✘</span>
-                        {% endif %}
-                    </td>
-                    <td style="text-align: center">
-                        <form class="search-result__refresh-form" action="/update" method="post">
-                            <input type="hidden" name="name" value="{{ package.name }}">
-                            <button class="search-result__refresh-button">↺</button>
-                        </form>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="6" class="no-results">No results.</td>
-                </tr>
-            {% endfor %}
+                        </td>
+                        <td style="text-align: center">
+                            {% if package.isActive %}
+                                <span class="status-icon status-icon--active" title="Active">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                </span>
+                            {% else %}
+                                <span class="status-icon status-icon--inactive" title="Inactive">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: center">
+                            <form class="search-result__refresh-form" action="/update" method="post">
+                                <input type="hidden" name="name" value="{{ package.name }}">
+                                <button class="refresh-button search-result__refresh-button" type="submit" title="Refresh package">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 2v6h-6"></path>
+                                        <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                                        <path d="M3 22v-6h6"></path>
+                                        <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center" style="padding: 48px;">
+                            <strong>No results found.</strong>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-        </tbody>
-    </table>
+            <!-- Pagination -->
+            {{ pagerfanta(pager, 'default') }}
+        </div>
 
-    {{ pagerfanta(pager, 'default') }}
+        <!-- Decorative Divider -->
+        <div class="search-divider"></div>
 
-    <div class="alert-box info">
-        If a package has no version and/or is not active, please check it is visible on
-        <a href="https://wordpress.org/plugins/">wordpress.org</a> before reporting a
-        <a href="https://github.com/outlandishideas/wpackagist/issues/new">bug</a>.
+        <!-- Info Banner -->
+        <div class="alert alert--info">
+            <span class="alert__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+            </span>
+            <div class="alert__content">
+                If a package has no version and/or is not active, please check it is visible on <a href="https://wordpress.org/plugins/">wordpress.org</a> before reporting a <a href="https://github.com/outlandishideas/wpackagist/issues/new">bug</a>.
+            </div>
+        </div>
+    </main>
+
+    <!-- Package Modal -->
+    <div class="modal" id="package-modal">
+        <div class="modal__backdrop"></div>
+        <div class="modal__container">
+            <div class="modal__header">
+                <h3 class="modal__title" id="modal-package-name"></h3>
+                <button class="modal__close" type="button" aria-label="Close modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal__body">
+                <div class="modal__info-grid">
+                    <div class="modal__info-col">
+                        <div class="modal__info-row">
+                            <span class="modal__info-label">Type</span>
+                            <span class="modal__info-value" id="modal-package-type"></span>
+                        </div>
+                        <div class="modal__info-row modal__info-row--alt">
+                            <span class="modal__info-label">Last committed</span>
+                            <span class="modal__info-value" id="modal-package-committed"></span>
+                        </div>
+                        <div class="modal__info-row">
+                            <span class="modal__info-label">Last fetched</span>
+                            <span class="modal__info-value" id="modal-package-fetched"></span>
+                        </div>
+                    </div>
+                    <div class="modal__info-col">
+                        <div class="modal__info-row">
+                            <span class="modal__info-label">Active</span>
+                            <span class="modal__info-value" id="modal-package-active"></span>
+                        </div>
+                        <div class="modal__info-row modal__info-row--alt">
+                            <a href="#" id="modal-refresh-link" class="modal__action-link">
+                                Check for newer versions
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 2v6h-6"></path>
+                                    <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                                    <path d="M3 22v-6h6"></path>
+                                    <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                                </svg>
+                            </a>
+                        </div>
+                        <div class="modal__info-row">
+                            <a href="#" id="modal-wp-link" target="_blank" class="modal__action-link">
+                                View on WordPress.org
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                    <polyline points="15 3 21 3 21 9"></polyline>
+                                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal__versions-section">
+                    <div class="modal__versions-header">
+                        <p class="modal__versions-title">Versions:</p>
+                        <p class="modal__versions-subtitle">Select a version for copyable code snippet</p>
+                    </div>
+                    <div class="modal__versions" id="modal-versions"></div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <div class="modal__copy-field">
+                    <input type="text" id="modal-copy-field" class="modal__copy-input" readonly>
+                    <button type="button" class="modal__copy-suffix" id="modal-copy-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>Copy</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

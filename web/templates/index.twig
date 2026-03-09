@@ -1,43 +1,99 @@
 {% extends "layout.twig" %}
 
-{% block title %}
-    {{ title }}
-{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <p class="mission">This site mirrors the WordPress&reg; <a href=
-        "https://plugins.svn.wordpress.org/">plugin</a> and <a href=
-        "https://themes.svn.wordpress.org/">theme</a> directories as a <a href=
-        "https://getcomposer.org/">Composer</a> repository.
-    </p>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero__card">
+                <div class="hero__content dashed_border">
+                    <div class="hero__logo">
+                        <img src="{{ app.request.basepath }}/assets/img/wpackagist-logo.svg" alt="WPackagist">
+                    </div>
+                    <h1 class="hero__title">WPackagist</h1>
+                    <p class="hero__tagline">
+                        A free service that mirrors the WordPress&reg; <a href="https://plugins.svn.wordpress.org/">plugin</a> and <a href="https://themes.svn.wordpress.org/">theme</a> directories as a <a href="https://getcomposer.org/">Composer</a> repository. <a class="disclaimer-link" href="#legal-disclaimer"><sup>1</sup></a>
+                    </p>
 
-    {% include 'searchbar.twig' %}
+                    {% include 'searchbar.twig' %}
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <div class="row">
-        <div class="large-6 columns">
-            <h3>How do I use it?</h3>
+    <!-- Main Content -->
+    <main class="container">
+        <div class="dashed_border bottom--dashed">
+            <div class="content">
+                <!-- How do I use it? -->
+                <section class="section">
+                    <h2 class="section__title">How do I use it?</h2>
+                    <ol class="steps">
+                        <li class="steps__item">Add the repository to your <code>composer.json</code></li>
+                        <li class="steps__item">Add the desired plugins and themes to your requirements using <code>wpackagist-plugin</code>
+                            or <code>wpackagist-theme</code> as the vendor name.
+                        </li>
+                        <li class="steps__item">Run <code>$ composer.phar update</code></li>
+                        <li class="steps__item">Packages are <a
+                                href="https://github.com/composer/installers">installed</a> to
+                            <code>wp-content/plugins/</code> or <code>wp-content/themes/</code> (unless otherwise
+                            specified by <code>installer-paths</code>)
+                        </li>
+                    </ol>
+                </section>
 
-            <ol>
-                <li>Add the repository to your <code>composer.json</code></li>
-
-                <li>Add the desired plugins and themes to your requirements using
-                <code>wpackagist-plugin</code> or <code>wpackagist-theme</code> as
-                the vendor name.</li>
-
-                <li>Run <code>$ composer.phar update</code></li>
-
-                <li>Packages are <a href="https://github.com/composer/installers" target="_blank">
-                    installed</a> to <code>wp-content/plugins/</code> or
-                    <code>wp-content/themes/</code> (unless otherwise specified by
-                    <code>installer-paths</code>)
-                </li>
-            </ol>
-
-            <h3>Example</h3>
+                <!-- Example Usage -->
+                <section class="section section--bordered">
+                    <h2 class="section__title">Example Usage</h2>
+                    <div class="code-block">
+                        <div class="code-block__lines">
+<pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</pre>
+                        </div>
+                        <div class="code-block__content">
 <pre>{
     "name": "acme/brilliant-wordpress-site",
     "description": "My brilliant WordPress site",
-<div class="highlighter">    "repositories":[
+<span class="code-block__highlight">    "repositories":[
         {
             "name": "wpackagist",
             "type": "composer",
@@ -47,13 +103,13 @@
                 "wpackagist-theme/*"
             ]
         }
-    ],
-</div>    "require": {
+    ],</span>
+    "require": {
         "aws/aws-sdk-php":"*",
-<div class="highlighter">        "wpackagist-plugin/akismet":"dev-trunk",
-        "wpackagist-plugin/wordpress-seo":">=7.0.2",
-        "wpackagist-theme/hueman":"*"
-</div>    },
+<span class="code-block__highlight">        "wpackagist-plugin/akismet":"dev-trunk",
+        "wpackagist-plugin/advanced-custom-fields":"&gt;=6.7.1",
+        "wpackagist-theme/frost":"*"</span>
+    },
     "autoload": {
         "psr-0": {
             "Acme": "src/"
@@ -61,105 +117,100 @@
     },
     "extra": {
         "installer-paths": {
-<div class="highlighter">            "wp-content/mu-plugins/{$name}/": [
+<span class="code-block__highlight">            "wp-content/mu-plugins/{$name}/": [
                 "wpackagist-plugin/akismet"
-            ],
-</div>            "wp-content/plugins/{$name}/": [
+            ],</span>
+            "wp-content/plugins/{$name}/": [
                 "type:wordpress-plugin"
             ]
         }
     }
 }</pre>
-
-            <p>This example <code>composer.json</code> file adds the Wpackagist
-            repository and includes the latest version of Akismet (installed as
-            a must-use plugin), at least version 7.0.2 of Wordpress SEO, and the latest
-            Hueman theme along with the Amazon Web Services SDK from the main
-            <a href="https://packagist.org/" target="_blank">Packagist</a> repository.</p>
-
-            <p>Find out more about <a href=
-            "https://getcomposer.org/doc/01-basic-usage.md" target="_blank">using Composer</a>
-            including <a href=
-            "https://github.com/composer/installers#custom-install-paths" target="_blank">custom
-            install paths</a>.</p>
-
-            <p>The old vendor prefix <code>wpackagist</code> is now
-            <strong>removed</strong> in favour of
-            <code>wpackagist-plugin</code>.</p>
+                        </div>
+                    </div>
+                    <p>
+                        This example <code>composer.json</code> file adds the Wpackagist repository and includes the
+                        latest version of Akismet (installed as a must-use plugin), at least version 6.7.1 of <a href="https://www.advancedcustomfields.com/">Advanced Custom Fields</a>, and the latest <a href="https://frostwp.com/">Frost</a> theme along with the Amazon Web Services SDK from the main <a
+                            href="https://packagist.org/">Packagist</a> repository.
+                    </p>
+                    <p>
+                        Find out more about <a href="https://getcomposer.org/doc/01-basic-usage.md">using Composer</a>
+                        including <a href="https://github.com/composer/installers#custom-install-paths">custom install
+                            paths</a>.
+                    </p>
+                    <p>
+                        The old vendor prefix <code>wpackagist</code> is now <strong>removed</strong> in favour of
+                        <code>wpackagist-plugin</code>.
+                    </p>
+                </section>
+            </div>
         </div>
+        <div class="dashed_border bottom--dashed">
+            <div class="content">
+                <!-- Why use Composer? -->
+                <section class="section section">
+                    <h2 class="section__title">Why use Composer?</h2>
+                    <blockquote>
+                        <p>&ldquo;Composer is a tool for dependency management in PHP. It allows you to declare the
+                            dependent libraries your project needs and it will install them in your project for you.&rdquo;</p>
+                        <cite>&mdash; <a href="https://getcomposer.org/doc/00-intro.md">getcomposer.org</a></cite>
+                    </blockquote>
+                    <ul>
+                        <li>Avoid committing plugins and themes into source control.</li>
+                        <li>Avoid having to use git submodules.</li>
+                        <li>Manage WordPress&reg; and non-WordPress&reg; project libraries with the same tools.</li>
+                        <li>Could eventually be used to manage dependencies between plugins.</li>
+                    </ul>
+                </section>
 
-        <div class="large-6 columns">
-            <h3>Why use Composer?</h3>
+                <!-- How does the repository work? -->
+                <section class="section section--bordered">
+                    <h2 class="section__title">How does the repository work?</h2>
+                    <ul>
+                        <li>Scans the WordPress&reg; Subversion repository every hour for <a
+                                href="https://plugins.svn.wordpress.org/">plugins</a> and <a
+                                href="https://themes.svn.wordpress.org/">themes</a>. Search and click
+                            <code class="refresh-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg></code>
+                            to make any newer versions available.
+                        </li>
+                        <li>Fetches the <code>tags</code> for each updated package and maps those to versions.</li>
+                        <li>For plugins, adds <code>trunk</code> as a dev version.</li>
+                        <li>Rebuilds the composer package JSON files.</li>
+                    </ul>
+                </section>
 
-            <blockquote class="clearfix">
-                &ldquo;Composer is a tool for dependency management in PHP. It
-                allows you to declare the dependent libraries your project needs
-                and it will install them in your project for you.&rdquo;
+                <!-- Known issues -->
+                <section class="section section--bordered">
+                    <h2 class="section__title">Known issues</h2>
+                    <ul>
+                        <li>Requires Composer 1.0.0-alpha7 or more recent</li>
+                        <li>Version strings which Composer cannot parse are ignored. All plugins have at least the trunk
+                            build available.
+                        </li>
+                        <li>Themes do not have a trunk version. It is recommended to use <code>"*"</code> as the
+                            required version.
+                        </li>
+                        <li>Even when packages are present on SVN, they won&rsquo;t be available if they are not
+                            published on <a href="https://wordpress.org/plugins/">wordpress.org</a>. Try <a
+                                href="{{ app.request.basepath }}/search">searching</a> for your plugin before reporting
+                            a <a href="https://github.com/outlandishideas/wpackagist/issues/new?title=[Bug]%20">bug</a>.
+                        </li>
+                        <li>You can also check for <a href="https://github.com/outlandishideas/wpackagist/issues">open
+                                issues</a>.
+                        </li>
+                    </ul>
+                </section>
 
-                <div class="right">
-                    &mdash; <a href=
-                    "https://getcomposer.org/doc/00-intro.md" target="_blank">getcomposer.org</a>
-                </div>
-            </blockquote>
-
-            <ul>
-                <li>Avoid committing plugins and themes into source control.</li>
-
-                <li>Avoid having to use git submodules.</li>
-
-                <li>Manage WordPress&reg; and non-WordPress&reg; project libraries with the
-                same tools.</li>
-
-                <li>Could eventually be used to manage dependencies between
-                plugins.</li>
-            </ul>
-
-            <h3>How does the repository work?</h3>
-
-            <ul>
-                <li>Scans the WordPress&reg; Subversion repository every hour for <a href=
-                "https://plugins.svn.wordpress.org/" target="_blank">plugins</a> and <a href=
-                "https://themes.svn.wordpress.org/" target="_blank">themes</a>. Search and click <button disabled class="search-result__refresh-button">↺</button> to make any newer versions available.
-                </li>
-
-                <li>Fetches the <code>tags</code> for each updated package and maps
-                those to versions.</li>
-
-                <li>For plugins, adds <code>trunk</code> as a dev version.</li>
-
-                <li>Rebuilds the composer package JSON files.</li>
-            </ul>
-
-            <h3>Known issues</h3>
-
-            <ul>
-                <li>Requires Composer 1.0.0-alpha7 or more recent</li>
-
-                <li>Version strings which Composer cannot parse are ignored. All
-                plugins have at least the trunk build available.</li>
-
-                <li>Themes do not have a trunk version. It is recommended to use
-                <code>"*"</code> as the required version.</li>
-
-                <li>Even when packages are present on SVN, they won’t be available
-                if they are not published on <a href="https://wordpress.org/plugins/" target="_blank">wordpress.org</a>.
-                Try <a href="{{ app.request.basepath }}/search">searching</a> for your plugin before reporting a
-                <a href="https://github.com/outlandishideas/wpackagist/issues/new?title=[Bug]%20" target="_blank">bug</a>.</li>
-
-                <li>You can also check for <a href="https://github.com/outlandishideas/wpackagist/issues" target="_blank">open issues</a>.</li>
-            </ul>
-
-            <h3>WordPress&reg; Core</h3>
-
-            <p>See
-                <code><a href="https://github.com/fancyguy/webroot-installer" target="_blank">fancyguy/webroot-installer</a></code> or
-                <code><a href="https://github.com/roots/wordpress" target="_blank">roots/wordpress</a></code> for installing
-                WordPress&reg; itself using Composer.</p>
-
-            <h3>Contribute or get support</h3>
-
-            <p>Please visit our <a href="https://github.com/outlandishideas/wpackagist" target="_blank">GitHub page</a>.</p>
-            <iframe src="https://github.com/sponsors/outlandishideas/button" title="Sponsor outlandishideas" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
+                <!-- WordPress Core -->
+                <section class="section section--bordered">
+                    <h2 class="section__title">WordPress&reg; Core</h2>
+                    <p>
+                        See <a href="https://github.com/fancyguy/webroot-installer">fancyguy/webroot-installer</a>
+                        or <a href="https://github.com/roots/wordpress">roots/wordpress</a> for installing
+                        WordPress&reg; itself using Composer.
+                    </p>
+                </section>
+            </div>
         </div>
-    </div>
+    </main>
 {% endblock %}

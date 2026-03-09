@@ -1,0 +1,25 @@
+{% if metanav_data is defined and metanav_data %}
+<nav aria-label="WP Engine family of brands" class="wpe-navs__metanav-container">
+    <div class="wpe-navs__metanav__inner">
+        <ul class="wpe-navs__metanav__nav">
+            {% for item in metanav_data %}
+            <li class="wpe-navs__metanav__navitem">
+                {% if current_domain and item.url is defined and current_domain in item.url %}
+                <span aria-label="{{ item.label }}" class="wpe-navs__metanav__navlink wpe-navs__metanav__navlink--active">
+                    {{ item.image|raw }}
+                </span>
+                {% else %}
+                <a href="{{ item.url }}" target="_blank" rel="noopener" aria-label="{{ item.label }}" class="wpe-navs__metanav__navlink">
+                    {{ item.image|raw }}
+                </a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="wpe-navs__metanav__promo">
+            <span>📣 WPackagist is now maintained by WP Engine</span>
+            <a href="https://wpengine.com/blog/wp-engine-acquires-wpackagist/" target="_blank" rel="noopener">Learn more</a>
+        </div>
+    </div>
+</nav>
+{% endif %}
