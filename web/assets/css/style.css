@@ -1073,6 +1073,19 @@ blockquote cite a {
     color: var(--color-primary);
 }
 
+.results-table .copy-composer-package-name {
+    display: inline;
+    padding: 0;
+    background: none;
+    color: var(--color-primary);
+    border-radius: 0;
+    font-size: var(--text-sm);
+    font-weight: var(--font-regular);
+    text-decoration-line: none;
+    margin-right: var(--spacing-sm);
+    margin-bottom: 0;
+}
+
 /* --------------------------------------------------------------------------
    Status Icons
    -------------------------------------------------------------------------- */

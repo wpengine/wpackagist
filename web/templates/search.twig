@@ -71,9 +71,21 @@
                             {{ package.lastFetched ? package.lastFetched | date('M j, Y H:i') : 'Not fetched' }}
                         </td>
                         <td>
+                            {% set showLatest = versions|length > 0 %}
                             {% set hasDevTrunk = 'dev-trunk' in versions %}
                             {% set maxVisible = 3 %}
                             {% set hiddenCount = totalVersions > maxVisible ? totalVersions - maxVisible : 0 %}
+
+                            {# Show version-free copy link first if any version available #}
+                            {% if showLatest %}
+                                <a href="#" data-version='"wpackagist-{{ package.type }}/{{ package.name }}"' class="copy-composer-package-name js-composer-package-name" aria-label="Copy versionless composer package name to clipboard" title="Copy versionless composer package name to clipboard">
+                                        <input type="hidden" value='"wpackagist-{{ package.type }}/{{ package.name }}"' />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                </a>
+                            {% endif %}
 
                             {# Show dev-trunk first if available #}
                             {% if hasDevTrunk %}
