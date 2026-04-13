@@ -94,7 +94,7 @@ $(document).ready(function () {
     function updateCopyField() {
         if (!currentPackageData || !selectedVersion) return;
 
-        var copyString = '"wpackagist-' + currentPackageData.type + '/' + currentPackageData.name + '": "' + selectedVersion + '"';
+        var copyString = '"wpackagist-' + currentPackageData.type + '/' + currentPackageData.name + '":"' + selectedVersion + '"';
         $('#modal-copy-field').val(copyString);
     }
 
