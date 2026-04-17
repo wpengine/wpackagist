@@ -38,6 +38,42 @@ $(document).ready(function () {
         openModal();
     });
 
+    $('.js-composer-package-name').on('click', function (event) {
+        event.preventDefault();
+
+        var $element = $(this),
+            $parentRow = $element.closest('tr'),
+            clickedVersion = $element.data('version');
+
+        // Get package data from row data attributes
+        currentPackageData = {
+            name: $parentRow.data('package-name'),
+            type: $parentRow.data('package-type'),
+            lastCommitted: $parentRow.data('package-last-committed'),
+            lastFetched: $parentRow.data('package-last-fetched'),
+            isActive: $parentRow.data('package-is-active') === true || $parentRow.data('package-is-active') === 'true',
+            versions: $parentRow.data('package-versions') || []
+        };
+
+        var $link = $(this);
+        var $input = $link.children('input').first();
+
+        $input.select();
+
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText($input.val()).then(function () {
+                $link.children('svg').first().html('<polyline points="20 6 9 17 4 12"></polyline>');
+
+                setTimeout(function () {
+                    $link.children('svg').first().html('<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>');
+                }, 2000);
+            });
+        } else {
+            // Fallback for older browsers
+            document.execCommand('copy');
+        }
+    });
+
     function openModal() {
         if (!currentPackageData) return;
 
@@ -94,7 +130,7 @@ $(document).ready(function () {
     function updateCopyField() {
         if (!currentPackageData || !selectedVersion) return;
 
-        var copyString = '"wpackagist-' + currentPackageData.type + '/' + currentPackageData.name + '": "' + selectedVersion + '"';
+        var copyString = '"wpackagist-' + currentPackageData.type + '/' + currentPackageData.name + '":"' + selectedVersion + '"';
         $('#modal-copy-field').val(copyString);
     }
 
