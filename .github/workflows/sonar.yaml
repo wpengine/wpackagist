@@ -16,13 +16,13 @@ jobs:
           fetch-depth: 0
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@45f27363d4ff7d6b16baa0516490f10c52bdd5fc
+        uses: sonarsource/sonarqube-scan-action@ad8210318ac8bb816e41990d5af2b304f7a6c213
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       - name: SonarQube Quality Gate check
-        uses: sonarsource/sonarqube-quality-gate-action@8e9b0ca0a7273d6f16986388d98393efdfcf56fd
+        uses: sonarsource/sonarqube-quality-gate-action@7a5fffe8e523c40e0c740b6bc2712ab503e52efa
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
