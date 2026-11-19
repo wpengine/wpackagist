@@ -1,4 +1,6 @@
-FROM php:8.5-apache
+# Override to pin an exact image, e.g. --build-arg PHP_IMAGE=php:8.5.13-apache@sha256:...
+ARG PHP_IMAGE=php:8.5-apache
+FROM ${PHP_IMAGE}
 
 ARG env
 RUN test -n "$env"
@@ -31,7 +33,9 @@ RUN apt-get update -qq && \
 RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
  && docker-php-ext-install intl mbstring pdo_pgsql zip
 
-RUN pecl install redis && rm -rf /tmp/pear && docker-php-ext-enable redis
+# Retry: pecl.php.net intermittently returns HTTP 502/504.
+RUN for i in 1 2 3 4 5 6 7 8; do pecl install redis && break; [ "$i" = 8 ] && exit 1; sleep 15; done \
+ && rm -rf /tmp/pear && docker-php-ext-enable redis
 
 # Get latest Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
